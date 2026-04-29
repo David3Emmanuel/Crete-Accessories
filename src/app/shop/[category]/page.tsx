@@ -6,9 +6,11 @@ import ShopFilters from '@/components/shop/ShopFilters'
 import ShopSort from '@/components/shop/ShopSort'
 import Pagination from '@/components/shop/Pagination'
 
+type SP = Promise<{ [key: string]: string | string[] | undefined }>
+
 interface Props {
   params: Promise<{ category: string }>
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+  searchParams: SP
 }
 
 export async function generateMetadata({ params }: Props) {
@@ -25,7 +27,7 @@ export async function generateStaticParams() {
   return categories.map((cat) => ({ category: cat.slug }))
 }
 
-export default async function CategoryPage({ params, searchParams }: Props) {
+async function CategoryContent({ params, searchParams }: Props) {
   const [{ category }, sp] = await Promise.all([params, searchParams])
   const { sort, page, badge } = sp
 
@@ -49,18 +51,14 @@ export default async function CategoryPage({ params, searchParams }: Props) {
   return (
     <main className='min-h-screen pt-12 pb-24 px-4 md:px-8 max-w-[1600px] mx-auto'>
       <div className='flex flex-col md:flex-row gap-12'>
-        <Suspense>
           <ShopFilters categories={categories} activeCategory={category} />
-        </Suspense>
 
         <section className='flex-1 space-y-10'>
           <div className='flex flex-wrap items-center justify-between gap-4'>
             <h1 className='font-serif text-3xl font-bold text-on-surface'>
               {matchedCategory.name}
             </h1>
-            <Suspense>
               <ShopSort activeCategory={category} />
-            </Suspense>
           </div>
 
           {products.length === 0 ? (
@@ -74,15 +72,18 @@ export default async function CategoryPage({ params, searchParams }: Props) {
           )}
 
           {pagination && (
-            <Suspense>
-              <Pagination
-                currentPage={pagination.page}
-                totalPages={pagination.pageCount}
-              />
-            </Suspense>
+            <Pagination currentPage={pagination.page} totalPages={pagination.pageCount} />
           )}
         </section>
       </div>
     </main>
+  )
+}
+
+export default function CategoryPage(props: Props) {
+  return (
+    <Suspense>
+      <CategoryContent {...props} />
+    </Suspense>
   )
 }
