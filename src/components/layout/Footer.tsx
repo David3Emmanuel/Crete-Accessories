@@ -122,7 +122,7 @@ export default function Footer() {
       {/* Bottom bar */}
       <div className='mt-12 pt-8 border-t border-neutral-900 text-neutral-600 text-xs flex flex-col md:flex-row justify-between gap-4'>
         <p>
-          © {new Date().getFullYear()} Crete Accessories. All rights reserved.
+          © <Year /> Crete Accessories. All rights reserved.
         </p>
         <div className='flex gap-6'>
           <span>Crafted for Excellence</span>
@@ -131,4 +131,9 @@ export default function Footer() {
       </div>
     </footer>
   )
+}
+
+async function Year() {
+  'use cache'
+  return <span>{new Date().getFullYear()}</span>
 }
