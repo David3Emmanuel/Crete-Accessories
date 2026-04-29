@@ -31,6 +31,7 @@ export default function NewArrivals({ products }: NewArrivalsProps) {
           <ProductCard
             key={product.documentId}
             product={product}
+            variant='home'
             className={i === 1 ? 'md:translate-y-12' : ''}
           />
         ))}
