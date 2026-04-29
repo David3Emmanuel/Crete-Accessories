@@ -42,7 +42,9 @@ export type InferAttr<T> = T extends {
                 : StrapiMedia | null
               : never
 
-type IsIncluded<T> = T extends { type: 'relation' | 'component' | 'dynamiczone' }
+type IsIncluded<T> = T extends {
+  type: 'relation' | 'component' | 'dynamiczone'
+}
   ? false
   : T extends { private: true }
     ? false
@@ -80,7 +82,9 @@ export type InferComponent<
 export type InferDoc<
   TSchema extends { attributes: Record<string, Schema.Attribute.AnyAttribute> },
   TOverrides extends Record<string, unknown> = Record<never, never>,
-> = Prettify<Omit<StrapiBase & ScalarDoc<TSchema['attributes']>, keyof TOverrides>> &
+> = Prettify<
+  Omit<StrapiBase & ScalarDoc<TSchema['attributes']>, keyof TOverrides>
+> &
   TOverrides
 
 // ─── Strapi base fields ────────────────────────────────────────────────────────
@@ -137,6 +141,10 @@ export type BlocksNode = {
   format?: string
   [key: string]: unknown
 }
+
+// ─── Payload ─────────────────────────────────────────────────────────────────
+
+export type Payload<T> = Omit<T, keyof StrapiBase>
 
 // ─── API response wrappers ────────────────────────────────────────────────────
 
