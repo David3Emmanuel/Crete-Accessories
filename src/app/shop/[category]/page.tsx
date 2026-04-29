@@ -43,7 +43,6 @@ async function CategoryContent({ params, searchParams }: Props) {
     }),
   ])
 
-  // 404 if the slug doesn't match any known category
   const matchedCategory = categories.find((c) => c.slug === category)
   if (!matchedCategory) notFound()
 
@@ -51,16 +50,16 @@ async function CategoryContent({ params, searchParams }: Props) {
   const pagination = productsRes?.meta.pagination
 
   return (
-    <main className='min-h-screen pt-12 pb-24 px-4 md:px-8 max-w-[1600px] mx-auto'>
+    <main className='min-h-screen pt-12 pb-24 px-4 md:px-8 max-w-400 mx-auto'>
       <div className='flex flex-col md:flex-row gap-12'>
-          <ShopFilters categories={categories} activeCategory={category} />
+        <ShopFilters categories={categories} activeCategory={category} />
 
         <section className='flex-1 space-y-10'>
           <div className='flex flex-wrap items-center justify-between gap-4'>
             <h1 className='font-serif text-3xl font-bold text-on-surface'>
               {matchedCategory.name}
             </h1>
-              <ShopSort activeCategory={category} />
+            <ShopSort activeCategory={category} />
           </div>
 
           {products.length === 0 ? (
