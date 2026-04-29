@@ -24,7 +24,9 @@ export async function generateMetadata({ params }: Props) {
 
 export async function generateStaticParams() {
   const categories = await getCategories()
-  return categories.map((cat) => ({ category: cat.slug }))
+  return categories.length > 0
+    ? categories.map((cat) => ({ category: cat.slug }))
+    : [{ category: '_' }]
 }
 
 async function CategoryContent({ params, searchParams }: Props) {
