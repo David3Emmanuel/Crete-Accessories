@@ -81,7 +81,7 @@ export async function getProductSlugs(): Promise<string[]> {
   const res = await get<StrapiListResponse<Product>>(
     '/products?fields=slug&pagination[pageSize]=100',
   )
-  return res?.data.map((p) => p.slug).filter(Boolean) ?? []
+  return res?.data.map((p: Product) => p.slug).filter(Boolean) ?? []
 }
 
 export async function getRelatedProducts(
