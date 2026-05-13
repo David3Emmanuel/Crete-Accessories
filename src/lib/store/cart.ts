@@ -10,6 +10,9 @@ export interface CartItem {
 
 interface CartStore {
   items: CartItem[]
+  drawerOpen: boolean
+  openDrawer: () => void
+  closeDrawer: () => void
   addItem: (product: Product, variant?: string) => void
   removeItem: (productId: number, variant?: string) => void
   updateQty: (productId: number, quantity: number, variant?: string) => void
@@ -25,6 +28,9 @@ export const useCartStore = create<CartStore>()(
   persist(
     (set, get) => ({
       items: [],
+      drawerOpen: false,
+      openDrawer: () => set({ drawerOpen: true }),
+      closeDrawer: () => set({ drawerOpen: false }),
 
       addItem(product, variant) {
         set((state) => {
@@ -56,7 +62,9 @@ export const useCartStore = create<CartStore>()(
         const k = key(productId, variant)
         if (quantity < 1) {
           set((state) => ({
-            items: state.items.filter((i) => key(i.product.id, i.variant) !== k),
+            items: state.items.filter(
+              (i) => key(i.product.id, i.variant) !== k,
+            ),
           }))
           return
         }

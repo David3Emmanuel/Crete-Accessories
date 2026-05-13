@@ -17,6 +17,7 @@ const navLinks = [
 export default function Header() {
   const pathname = usePathname()
   const cartCount = useCartStore((s) => s.totalItems())
+  const openDrawer = useCartStore((s) => s.openDrawer)
 
   return (
     <header className='sticky top-0 z-50 w-full flex items-center justify-between px-8 py-4 bg-neutral-950/80 backdrop-blur-xl shadow-2xl'>
@@ -64,8 +65,8 @@ export default function Header() {
           <Heart size={20} />
         </button>
 
-        <Link
-          href='/cart'
+        <button
+          onClick={openDrawer}
           aria-label={`Cart (${cartCount} items)`}
           className='text-neutral-400 hover:text-primary transition-colors relative'
         >
@@ -75,7 +76,7 @@ export default function Header() {
               {cartCount}
             </span>
           )}
-        </Link>
+        </button>
       </div>
     </header>
   )

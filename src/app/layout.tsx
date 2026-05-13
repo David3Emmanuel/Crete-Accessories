@@ -3,6 +3,7 @@ import { Inter, Noto_Serif } from 'next/font/google'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import MobileNav from '@/components/layout/MobileNav'
+import CartDrawer from '@/components/cart/CartDrawer'
 import './globals.css'
 
 const inter = Inter({
@@ -38,6 +39,7 @@ export default function RootLayout({
         <main className='pb-24 md:pb-0'>{children}</main>
         <Footer />
         <MobileNav />
+        <CartDrawer />
       </body>
     </html>
   )
