@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Search, Heart, ShoppingBag } from 'lucide-react'
+import { useCartStore } from '@/lib/store/cart'
 
 const navLinks = [
   { label: 'Home', href: '/' },
@@ -13,12 +14,9 @@ const navLinks = [
   { label: 'Contact', href: '/contact' },
 ]
 
-interface HeaderProps {
-  cartCount?: number
-}
-
-export default function Header({ cartCount = 0 }: HeaderProps) {
+export default function Header() {
   const pathname = usePathname()
+  const cartCount = useCartStore((s) => s.totalItems())
 
   return (
     <header className='sticky top-0 z-50 w-full flex items-center justify-between px-8 py-4 bg-neutral-950/80 backdrop-blur-xl shadow-2xl'>

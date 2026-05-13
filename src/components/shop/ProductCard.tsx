@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { ShoppingCart } from 'lucide-react'
 import type { Product } from '@/lib/strapi/types'
 import { getStrapiMediaUrl } from '@/lib/strapi/media'
+import { useCartStore } from '@/lib/store/cart'
 
 interface ProductCardProps {
   product: Product
@@ -26,6 +27,7 @@ export default function ProductCard({
   className = '',
   variant = 'shop',
 }: ProductCardProps) {
+  const addItem = useCartStore((s) => s.addItem)
   const image = product.images?.[0]
   const imageUrl = image ? getStrapiMediaUrl(image.url) : null
   const badge = product.badge
@@ -59,7 +61,10 @@ export default function ProductCard({
             </p>
           </div>
         </Link>
-        <button className='w-full mt-4 py-3 border border-primary text-primary rounded-full group-hover:bg-primary group-hover:text-on-primary transition-all duration-300 font-bold uppercase tracking-widest text-xs'>
+        <button
+          onClick={() => addItem(product)}
+          className='w-full mt-4 py-3 border border-primary text-primary rounded-full group-hover:bg-primary group-hover:text-on-primary transition-all duration-300 font-bold uppercase tracking-widest text-xs'
+        >
           Add to Cart
         </button>
       </div>
@@ -105,6 +110,7 @@ export default function ProductCard({
           </span>
           <button
             aria-label={`Add ${product.name} to cart`}
+            onClick={() => addItem(product)}
             className='flex items-center justify-center w-12 h-12 rounded-full bg-primary-container text-on-primary hover:bg-primary transition-colors shadow-lg shadow-primary/10'
           >
             <ShoppingCart size={18} />
