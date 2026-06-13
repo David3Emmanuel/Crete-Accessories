@@ -1,12 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { Minus, Plus, ShieldCheck, RefreshCw } from 'lucide-react'
 import { useCartStore } from '@/lib/store/cart'
 import { useAuthStore } from '@/lib/store/auth'
 import { getStrapiMediaUrl } from '@/lib/strapi/media'
+import { sendGAEvent } from '@next/third-parties/google'
 
 const SHIPPING = 3500
 const VAT_RATE = 0.075
@@ -79,6 +80,27 @@ export default function CheckoutPage() {
   const sub = subtotal()
   const vat = Math.round(sub * VAT_RATE)
   const total = sub + SHIPPING + vat
+
+  const hasTrackedCheckoutRef = useRef(false)
+
+  useEffect(() => {
+    if (items.length > 0 && !hasTrackedCheckoutRef.current) {
+      hasTrackedCheckoutRef.current = true
+      sendGAEvent({
+        event: 'begin_checkout',
+        value: total,
+        currency: 'NGN',
+        items: items.map((i) => ({
+          item_id: String(i.product.id),
+          item_name: i.product.name,
+          price: i.product.price,
+          quantity: i.quantity,
+          item_variant: i.variant ?? undefined,
+          item_category: i.product.category?.name ?? undefined,
+        })),
+      })
+    }
+  }, [items, total])
 
   function validate(): boolean {
     const e: Partial<DeliveryForm> = {}

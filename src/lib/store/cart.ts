@@ -13,7 +13,7 @@ interface CartStore {
   drawerOpen: boolean
   openDrawer: () => void
   closeDrawer: () => void
-  addItem: (product: Product, variant?: string) => void
+  addItem: (product: Product, variant?: string, quantity?: number) => void
   removeItem: (productId: number, variant?: string) => void
   updateQty: (productId: number, quantity: number, variant?: string) => void
   clearCart: () => void
@@ -32,7 +32,7 @@ export const useCartStore = create<CartStore>()(
       openDrawer: () => set({ drawerOpen: true }),
       closeDrawer: () => set({ drawerOpen: false }),
 
-      addItem(product, variant) {
+      addItem(product, variant, quantity = 1) {
         set((state) => {
           const k = key(product.id, variant)
           const existing = state.items.find(
@@ -42,12 +42,12 @@ export const useCartStore = create<CartStore>()(
             return {
               items: state.items.map((i) =>
                 key(i.product.id, i.variant) === k
-                  ? { ...i, quantity: i.quantity + 1 }
+                  ? { ...i, quantity: i.quantity + quantity }
                   : i,
               ),
             }
           }
-          return { items: [...state.items, { product, quantity: 1, variant }] }
+          return { items: [...state.items, { product, quantity, variant }] }
         })
       },
 

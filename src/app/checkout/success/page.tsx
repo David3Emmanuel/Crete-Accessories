@@ -1,19 +1,44 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { CheckCircle } from 'lucide-react'
 import { useCartStore } from '@/lib/store/cart'
+import { sendGAEvent } from '@next/third-parties/google'
 
 export default function CheckoutSuccessPage() {
   const searchParams = useSearchParams()
   const reference = searchParams.get('reference') ?? searchParams.get('trxref')
-  const clearCart = useCartStore((s) => s.clearCart)
+  const { items, clearCart, subtotal } = useCartStore()
+  const hasTrackedRef = useRef(false)
 
   useEffect(() => {
-    clearCart()
-  }, [clearCart])
+    if (items.length > 0 && !hasTrackedRef.current) {
+      hasTrackedRef.current = true
+      const sub = subtotal()
+      const vat = Math.round(sub * 0.075)
+      const total = sub + 3500 + vat // Shipping is fixed at 3500 NGN
+
+      sendGAEvent({
+        event: 'purchase',
+        transaction_id: reference ?? `CRETE-${Date.now()}`,
+        value: total,
+        currency: 'NGN',
+        tax: vat,
+        shipping: 3500,
+        items: items.map((i) => ({
+          item_id: String(i.product.id),
+          item_name: i.product.name,
+          price: i.product.price,
+          quantity: i.quantity,
+          item_variant: i.variant ?? undefined,
+          item_category: i.product.category?.name ?? undefined,
+        })),
+      })
+      clearCart()
+    }
+  }, [items, reference, subtotal, clearCart])
 
   return (
     <main className='min-h-screen flex flex-col items-center justify-center px-4 text-center gap-8'>

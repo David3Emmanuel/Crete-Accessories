@@ -3,16 +3,39 @@
 import { useState } from 'react'
 import { Heart, Minus, Plus, ShieldCheck, Truck } from 'lucide-react'
 import type { Product, ProductVariant } from '@/lib/strapi/types'
+import { useCartStore } from '@/lib/store/cart'
+import { sendGAEvent } from '@next/third-parties/google'
 
 interface ProductActionsProps {
   product: Product
 }
 
 export default function ProductActions({ product }: ProductActionsProps) {
+  const { addItem, openDrawer } = useCartStore()
   const [qty, setQty] = useState(1)
   const [activeVariant, setActiveVariant] = useState<ProductVariant | null>(
     product.variants?.[0] ?? null,
   )
+
+  const handleAddToCart = () => {
+    addItem(product, activeVariant?.name ?? undefined, qty)
+    openDrawer()
+    sendGAEvent({
+      event: 'add_to_cart',
+      value: product.price * qty,
+      currency: 'NGN',
+      items: [
+        {
+          item_id: String(product.id),
+          item_name: product.name,
+          price: product.price,
+          quantity: qty,
+          item_variant: activeVariant?.name ?? undefined,
+          item_category: product.category?.name ?? undefined,
+        },
+      ],
+    })
+  }
 
   return (
     <div className='flex flex-col gap-8'>
@@ -71,7 +94,10 @@ export default function ProductActions({ product }: ProductActionsProps) {
 
       {/* CTAs */}
       <div className='flex flex-col sm:flex-row gap-4'>
-        <button className='flex-1 bg-gradient-to-br from-primary to-primary-container text-on-primary font-bold py-5 rounded-full transition-transform hover:scale-[1.02] active:scale-95 shadow-xl'>
+        <button
+          onClick={handleAddToCart}
+          className='flex-1 bg-gradient-to-br from-primary to-primary-container text-on-primary font-bold py-5 rounded-full transition-transform hover:scale-[1.02] active:scale-95 shadow-xl'
+        >
           Add to Cart
         </button>
         <button className='flex items-center justify-center gap-2 px-8 py-5 rounded-full border border-neutral-600 hover:border-primary transition-colors text-on-surface'>
