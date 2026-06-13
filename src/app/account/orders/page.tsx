@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { Package, ChevronRight, Clock, CheckCircle2, XCircle, Truck } from 'lucide-react'
 import type { Order, StrapiListResponse } from '@/lib/strapi/types'
 import LogoutButton from '@/components/auth/LogoutButton'
+import { getStrapiMediaUrl } from '@/lib/strapi/media'
 
 async function getOrders(jwt: string): Promise<Order[]> {
   const baseURL = process.env.NEXT_PUBLIC_STRAPI_URL ?? 'http://localhost:1337'
@@ -137,7 +138,7 @@ async function OrdersList() {
                   <div className='relative w-16 h-16 bg-[#2a2a2a] rounded-lg overflow-hidden flex-shrink-0'>
                     {item.product?.images?.[0] && (
                       <img
-                        src={`${process.env.NEXT_PUBLIC_STRAPI_URL}${item.product.images[0].url}`}
+                        src={getStrapiMediaUrl(item.product.images[0].url)}
                         alt={item.product.name}
                         className='w-full h-full object-cover'
                       />
