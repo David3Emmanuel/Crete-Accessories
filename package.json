@@ -10,6 +10,7 @@
     "copy-types": "node ../copyTypes.js"
   },
   "dependencies": {
+    "@next/third-parties": "^16.2.9",
     "@strapi/client": "^1.6.1",
     "lucide-react": "^1.12.0",
     "next": "16.2.4",

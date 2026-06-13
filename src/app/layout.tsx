@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Inter, Noto_Serif } from 'next/font/google'
+import { GoogleAnalytics } from '@next/third-parties/google'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import MobileNav from '@/components/layout/MobileNav'
@@ -32,6 +33,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const gaId = process.env.NEXT_PUBLIC_GA_ID
+
   return (
     <html lang='en' className={`${inter.variable} ${notoSerif.variable}`}>
       <body className='min-h-screen bg-surface-dim text-on-surface antialiased'>
@@ -40,7 +43,9 @@ export default function RootLayout({
         <Footer />
         <MobileNav />
         <CartDrawer />
+        {gaId && <GoogleAnalytics gaId={gaId} />}
       </body>
     </html>
   )
 }
+
