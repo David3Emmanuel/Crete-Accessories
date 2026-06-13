@@ -2,8 +2,9 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Search, Heart, ShoppingBag } from 'lucide-react'
+import { Search, Heart, ShoppingBag, User } from 'lucide-react'
 import { useCartStore } from '@/lib/store/cart'
+import { useAuthStore } from '@/lib/store/auth'
 
 const navLinks = [
   { label: 'Home', href: '/' },
@@ -18,6 +19,7 @@ export default function Header() {
   const pathname = usePathname()
   const cartCount = useCartStore((s) => s.totalItems())
   const openDrawer = useCartStore((s) => s.openDrawer)
+  const user = useAuthStore((s) => s.user)
 
   return (
     <header className='sticky top-0 z-50 w-full flex items-center justify-between px-8 py-4 bg-neutral-950/80 backdrop-blur-xl shadow-2xl'>
@@ -57,6 +59,14 @@ export default function Header() {
         >
           <Search size={20} />
         </button>
+
+        <Link
+          href={user ? '/account/orders' : '/account/login'}
+          aria-label='Account'
+          className='text-neutral-400 hover:text-primary transition-colors'
+        >
+          <User size={20} />
+        </Link>
 
         <button
           aria-label='Wishlist'

@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Home, Store, ShoppingCart, User, type LucideIcon } from 'lucide-react'
 import { useCartStore } from '@/lib/store/cart'
+import { useAuthStore } from '@/lib/store/auth'
 
 interface NavItem {
   label: string
@@ -12,16 +13,17 @@ interface NavItem {
   isCart?: boolean
 }
 
-const navItems: NavItem[] = [
-  { label: 'Home', href: '/', icon: Home },
-  { label: 'Shop', href: '/shop', icon: Store },
-  { label: 'Cart', href: '/cart', icon: ShoppingCart, isCart: true },
-  { label: 'Profile', href: '/account/login', icon: User },
-]
-
 export default function MobileNav() {
   const pathname = usePathname()
   const cartCount = useCartStore((s) => s.totalItems())
+  const user = useAuthStore((s) => s.user)
+
+  const navItems: NavItem[] = [
+    { label: 'Home', href: '/', icon: Home },
+    { label: 'Shop', href: '/shop', icon: Store },
+    { label: 'Cart', href: '/cart', icon: ShoppingCart, isCart: true },
+    { label: 'Profile', href: user ? '/account/orders' : '/account/login', icon: User },
+  ]
 
   return (
     <nav className='fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-2 md:hidden bg-neutral-900/90 backdrop-blur-lg rounded-t-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.5)]'>
