@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 
 export async function POST(req: Request) {
-  const { amount, email, metadata } = await req.json()
+  const { amount, email, reference, metadata } = await req.json()
 
   if (!amount || !email) {
     return NextResponse.json(
@@ -24,6 +24,7 @@ export async function POST(req: Request) {
       amount: Math.round(amount * 100),
       currency: 'NGN',
       callback_url: `${siteUrl}/checkout/success`,
+      reference,
       metadata,
     }),
   })

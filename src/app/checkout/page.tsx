@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { Minus, Plus, ShieldCheck, RefreshCw } from 'lucide-react'
 import { useCartStore } from '@/lib/store/cart'
+import { useAuthStore } from '@/lib/store/auth'
 import { getStrapiMediaUrl } from '@/lib/strapi/media'
 
 const SHIPPING = 3500
@@ -62,6 +63,7 @@ interface DeliveryForm {
 export default function CheckoutPage() {
   const router = useRouter()
   const { items, updateQty, subtotal } = useCartStore()
+  const { jwt, user } = useAuthStore()
 
   const [form, setForm] = useState<DeliveryForm>({
     fullName: '',
@@ -100,18 +102,71 @@ export default function CheckoutPage() {
 
     setLoading(true)
     try {
+      // Generate unique order number
+      const orderNumber = `CRETE-${Date.now()}-${Math.floor(1000 + Math.random() * 9000)}`
+
+      // 1. Create pending order in Strapi
+      const orderPayload = {
+        data: {
+          orderNumber,
+          subtotal: sub,
+          shipping: SHIPPING,
+          vat,
+          total,
+          paystackReference: orderNumber,
+          status: 'pending',
+          deliveryAddress: {
+            fullName: form.fullName,
+            phone: form.phone,
+            address: form.address,
+            state: form.state,
+            city: form.city,
+          },
+          guestEmail: user ? null : form.email,
+          items: items.map((i) => ({
+            product: i.product.id,
+            quantity: i.quantity,
+            priceAtPurchase: i.product.price,
+            variant: i.variant ?? null,
+          })),
+        },
+      }
+
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+      }
+      if (jwt) {
+        headers['Authorization'] = `Bearer ${jwt}`
+      }
+
+      const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_URL ?? 'http://localhost:1337'
+      const orderRes = await fetch(`${strapiUrl}/api/orders`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(orderPayload),
+      })
+
+      if (!orderRes.ok) {
+        const errText = await orderRes.text()
+        console.error('Failed to create order in Strapi:', errText)
+        throw new Error('Order creation failed')
+      }
+
+      // 2. Initialize Paystack payment with the order number as the reference
       const res = await fetch('/api/payment/initialize', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           amount: total,
           email: form.email,
+          reference: orderNumber,
           metadata: {
             fullName: form.fullName,
             phone: form.phone,
             address: form.address,
             state: form.state,
             city: form.city,
+            orderNumber,
             items: items.map((i) => ({
               name: i.product.name,
               quantity: i.quantity,
@@ -125,8 +180,9 @@ export default function CheckoutPage() {
       if (!res.ok) throw new Error('Payment initialization failed')
       const { authorization_url } = await res.json()
       router.push(authorization_url)
-    } catch {
-      alert('Could not initialize payment. Please try again.')
+    } catch (err) {
+      console.error(err)
+      alert('Could not initialize payment/create order. Please try again.')
     } finally {
       setLoading(false)
     }
