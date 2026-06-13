@@ -1,13 +1,13 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, Suspense } from 'react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { CheckCircle } from 'lucide-react'
 import { useCartStore } from '@/lib/store/cart'
 import { sendGAEvent } from '@next/third-parties/google'
 
-export default function CheckoutSuccessPage() {
+function SuccessContent() {
   const searchParams = useSearchParams()
   const reference = searchParams.get('reference') ?? searchParams.get('trxref')
   const { items, clearCart, subtotal } = useCartStore()
@@ -80,3 +80,12 @@ export default function CheckoutSuccessPage() {
     </main>
   )
 }
+
+export default function CheckoutSuccessPage() {
+  return (
+    <Suspense fallback={<div className='min-h-screen flex items-center justify-center text-neutral-400'>Loading confirmation...</div>}>
+      <SuccessContent />
+    </Suspense>
+  )
+}
+
