@@ -6,20 +6,35 @@ import { Search, Heart, ShoppingBag, User } from 'lucide-react'
 import { useCartStore } from '@/lib/store/cart'
 import { useAuthStore } from '@/lib/store/auth'
 
-const navLinks = [
-  { label: 'Home', href: '/' },
-  { label: 'Shop', href: '/shop' },
-  { label: 'Books', href: '/shop/books' },
-  { label: 'Caps', href: '/shop/caps' },
-  { label: 'About', href: '/about' },
-  { label: 'Contact', href: '/contact' },
+interface HeaderProps {
+  categories?: { name: string; slug: string }[]
+}
+
+const fallbackCategories = [
+  { name: 'Jewelry', slug: 'jewelry' },
+  { name: 'Books', slug: 'books' },
+  { name: 'Caps', slug: 'caps' },
 ]
 
-export default function Header() {
+export default function Header({ categories = [] }: HeaderProps) {
   const pathname = usePathname()
   const cartCount = useCartStore((s) => s.totalItems())
   const openDrawer = useCartStore((s) => s.openDrawer)
   const user = useAuthStore((s) => s.user)
+
+  const displayCategories = categories.length > 0 ? categories : fallbackCategories
+
+  const navLinks = [
+    { label: 'Home', href: '/' },
+    { label: 'Shop', href: '/shop' },
+    ...displayCategories.map((cat) => ({
+      label: cat.name,
+      href: `/shop/${cat.slug}`,
+    })),
+    { label: 'About', href: '/about' },
+    { label: 'Contact', href: '/contact' },
+  ]
+
 
   return (
     <header className='sticky top-0 z-50 w-full flex items-center justify-between px-8 py-4 bg-neutral-950/80 backdrop-blur-xl shadow-2xl'>

@@ -1,11 +1,11 @@
 import Link from 'next/link'
 import { Globe, Camera, Mail, ArrowRight } from 'lucide-react'
+import { getCategories } from '@/lib/strapi/fetch'
 
-const quickLinks = [
-  { label: 'Home', href: '/' },
-  { label: 'Shop', href: '/shop' },
-  { label: 'Books', href: '/shop/books' },
-  { label: 'Caps', href: '/shop/caps' },
+const fallbackCategories = [
+  { name: 'Jewelry', slug: 'jewelry' },
+  { name: 'Books', slug: 'books' },
+  { name: 'Caps', slug: 'caps' },
 ]
 
 const supportLinks = [
@@ -15,7 +15,19 @@ const supportLinks = [
   { label: 'Terms & Conditions', href: '/terms' },
 ]
 
-export default function Footer() {
+export default async function Footer() {
+  const categories = await getCategories()
+  const displayCategories = categories.length > 0 ? categories : fallbackCategories
+
+  const quickLinks = [
+    { label: 'Home', href: '/' },
+    { label: 'Shop', href: '/shop' },
+    ...displayCategories.map((cat) => ({
+      label: cat.name,
+      href: `/shop/${cat.slug}`,
+    })),
+  ]
+
   return (
     <footer className='bg-neutral-950 border-t border-neutral-800 w-full py-16 px-8 font-serif text-sm'>
       <div className='grid grid-cols-1 md:grid-cols-4 gap-12'>
