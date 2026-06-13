@@ -28,6 +28,7 @@ export default function ProductCard({
   variant = 'shop',
 }: ProductCardProps) {
   const addItem = useCartStore((s) => s.addItem)
+  const openDrawer = useCartStore((s) => s.openDrawer)
   const image = product.images?.[0]
   const imageUrl = image ? getStrapiMediaUrl(image.url) : null
   const badge = product.badge
@@ -62,7 +63,10 @@ export default function ProductCard({
           </div>
         </Link>
         <button
-          onClick={() => addItem(product)}
+          onClick={() => {
+            addItem(product)
+            openDrawer()
+          }}
           className='w-full mt-4 py-3 border border-primary text-primary rounded-full group-hover:bg-primary group-hover:text-on-primary transition-all duration-300 font-bold uppercase tracking-widest text-xs'
         >
           Add to Cart
@@ -110,7 +114,10 @@ export default function ProductCard({
           </span>
           <button
             aria-label={`Add ${product.name} to cart`}
-            onClick={() => addItem(product)}
+            onClick={() => {
+              addItem(product)
+              openDrawer()
+            }}
             className='flex items-center justify-center w-12 h-12 rounded-full bg-primary-container text-on-primary hover:bg-primary transition-colors shadow-lg shadow-primary/10'
           >
             <ShoppingCart size={18} />
