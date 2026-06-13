@@ -35,7 +35,7 @@ export async function getNewArrivals(limit = 3): Promise<Product[]> {
   cacheLife('hours')
   cacheTag('products')
   const res = await get<StrapiListResponse<Product>>(
-    `/products?populate=images,category&sort=publishedAt:desc&pagination[limit]=${limit}`,
+    `/products?populate[0]=images&populate[1]=category&sort=publishedAt:desc&pagination[limit]=${limit}`,
   )
   return res?.data ?? []
 }
@@ -64,7 +64,7 @@ export async function getProducts(
   cacheTag('products')
 
   const { categorySlug, sort, badge, page = 1, pageSize = 12 } = options
-  const parts: string[] = ['populate=images,category']
+  const parts: string[] = ['populate[0]=images&populate[1]=category']
 
   if (categorySlug) parts.push(`filters[category][slug][$eq]=${encodeURIComponent(categorySlug)}`)
   if (badge) parts.push(`filters[badge][$eq]=${encodeURIComponent(badge)}`)
@@ -93,7 +93,7 @@ export async function getRelatedProducts(
   cacheLife('hours')
   cacheTag('products')
   const res = await get<StrapiListResponse<Product>>(
-    `/products?populate=images,category&filters[category][slug][$eq]=${encodeURIComponent(categorySlug)}&filters[slug][$ne]=${encodeURIComponent(excludeSlug)}&pagination[limit]=${limit}&sort=publishedAt:desc`,
+    `/products?populate[0]=images&populate[1]=category&filters[category][slug][$eq]=${encodeURIComponent(categorySlug)}&filters[slug][$ne]=${encodeURIComponent(excludeSlug)}&pagination[limit]=${limit}&sort=publishedAt:desc`,
   )
   return res?.data ?? []
 }
@@ -103,7 +103,7 @@ export async function getProduct(slug: string): Promise<Product | null> {
   cacheLife('hours')
   cacheTag('products')
   const res = await get<StrapiListResponse<Product>>(
-    `/products?filters[slug][$eq]=${encodeURIComponent(slug)}&populate=images,category,specifications,variants`,
+    `/products?filters[slug][$eq]=${encodeURIComponent(slug)}&populate[0]=images&populate[1]=category&populate[2]=specifications&populate[3]=variants`,
   )
   return res?.data?.[0] ?? null
 }
