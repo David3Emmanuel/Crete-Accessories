@@ -5,10 +5,12 @@ import { Package, ChevronRight, Clock, CheckCircle2, XCircle, Truck } from 'luci
 import type { Order, StrapiListResponse } from '@/lib/strapi/types'
 import LogoutButton from '@/components/auth/LogoutButton'
 
+export const dynamic = 'force-dynamic'
+
 async function getOrders(jwt: string): Promise<Order[]> {
   const baseURL = process.env.NEXT_PUBLIC_STRAPI_URL ?? 'http://localhost:1337'
   try {
-    const res = await fetch(`${baseURL}/api/orders?populate[items][populate][product][populate]=images&sort=createdAt:desc`, {
+    const res = await fetch(`${baseURL}/api/orders?sort=createdAt:desc`, {
       headers: {
         Authorization: `Bearer ${jwt}`,
       },
