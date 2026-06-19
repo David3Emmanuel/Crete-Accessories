@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { Globe, Camera, Mail, ArrowRight } from 'lucide-react'
 import { getCategories } from '@/lib/strapi/fetch'
 
@@ -33,7 +34,15 @@ export default async function Footer() {
       <div className='grid grid-cols-1 md:grid-cols-4 gap-12'>
         {/* Brand */}
         <div className='space-y-6'>
-          <div className='text-3xl font-bold text-on-surface'>Crete</div>
+          <Link href='/' className='inline-block'>
+            <Image
+              src='/logo.png'
+              alt='Crete Accessories Logo'
+              width={64}
+              height={64}
+              className='object-contain'
+            />
+          </Link>
           <p className='text-neutral-500 leading-relaxed max-w-xs'>
             Elevating your personal aesthetic with timeless accessories and
             curated essentials.

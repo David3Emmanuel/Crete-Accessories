@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { Search, Heart, ShoppingBag, User } from 'lucide-react'
 import { useCartStore } from '@/lib/store/cart'
@@ -39,11 +40,15 @@ export default function Header({ categories = [] }: HeaderProps) {
   return (
     <header className='sticky top-0 z-50 w-full flex items-center justify-between px-8 py-4 bg-neutral-950/80 backdrop-blur-xl shadow-2xl'>
       <div className='flex items-center gap-8'>
-        <Link
-          href='/'
-          className='text-2xl font-black text-on-surface tracking-tighter font-serif'
-        >
-          Crete
+        <Link href='/' className='flex items-center'>
+          <Image
+            src='/logo.png'
+            alt='Crete Accessories Logo'
+            width={48}
+            height={48}
+            className='object-contain'
+            priority
+          />
         </Link>
 
         <nav className='hidden md:flex gap-6'>
