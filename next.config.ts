@@ -19,12 +19,28 @@ const remotePatterns = [
   },
 ];
 
-if (process.env.STRAPI_HOST && process.env.STRAPI_HOST.trim() !== "") {
+const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_URL;
+const strapiHost = process.env.STRAPI_HOST;
+
+if (strapiHost && strapiHost.trim() !== "") {
   remotePatterns.push({
     protocol: "https" as const,
-    hostname: process.env.STRAPI_HOST.trim(),
+    hostname: strapiHost.trim(),
     pathname: "/uploads/**",
   });
+} else if (strapiUrl) {
+  try {
+    const url = new URL(strapiUrl);
+    if (url.protocol === "https:") {
+      remotePatterns.push({
+        protocol: "https" as const,
+        hostname: url.hostname,
+        pathname: "/uploads/**",
+      });
+    }
+  } catch {
+    // Ignore invalid URL
+  }
 }
 
 const nextConfig: NextConfig = {
