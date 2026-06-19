@@ -1,36 +1,60 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Crete Accessories — Frontend
+
+This is the Next.js 14 frontend application for the Crete Accessories luxury e-commerce platform.
 
 ## Getting Started
 
-First, run the development server:
-
+First, install dependencies:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Second, configure your environment variables in `.env.local`:
+```env
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+NEXT_PUBLIC_STRAPI_URL=http://localhost:1337
+NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX
+NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY=pk_test_...
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Third, run the development server:
+```bash
+pnpm dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## Google Analytics 4 (GA4) Event Tracking
 
-To learn more about Next.js, take a look at the following resources:
+The project uses `@next/third-parties/google` to integrate GA4. Measurement events are triggered programmatically via both client-side handlers and a declarative helper component for server-rendered page entries.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Helper Component
+* **`TrackEvent`** (`src/components/analytics/TrackEvent.tsx`): Mounts on server-rendered pages (like catalog pages and product detail screens) and automatically fires the designated GA event on client mount.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Implemented GA4 Events Summary
 
-## Deploy on Vercel
+| Event Name | Trigger Context | Associated Parameters |
+| :--- | :--- | :--- |
+| **`view_item_list`** | Viewing the homepage (New Arrivals shelf), shop catalog, or category pages. | `item_list_id`, `item_list_name`, `items` (array) |
+| **`view_item`** | Loading a product detail page. | `value`, `currency`, `items` (array) |
+| **`select_item`** | Clicking on any product grid card to view details. | `items` (array) |
+| **`add_to_cart`** | Adding an item to the cart (from product page or product card). | `value`, `currency`, `items` (array with qty) |
+| **`view_cart`** | Opening the cart drawer or visiting `/cart`. | `value`, `currency`, `items` (array) |
+| **`remove_from_cart`** | Deleting an item or reducing its quantity to 0 in the cart. | `value`, `currency`, `items` (array) |
+| **`begin_checkout`** | Navigating to the secure checkout page. | `value`, `currency`, `items` (array) |
+| **`purchase`** | Redirect landing on payment success from Paystack. | `transaction_id`, `value`, `currency`, `tax`, `shipping`, `items` |
+| **`add_to_wishlist`** | Clicking the "Save" (Heart) button on a product page. | `value`, `currency`, `items` (array) |
+| **`login`** | Successful user authentication. | `method` (`email_password`) |
+| **`sign_up`** | Successful new account registration. | `method` (`email_password`) |
+| **`search`** | Submitting a search query from the header. | `search_term` |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Parameter Details
+* **Currency:** Standardized to `NGN` for Nigerian Naira transaction reporting.
+* **Items Array:** Standard e-commerce payloads contain:
+  * `item_id`: Unique product ID string.
+  * `item_name`: The product name.
+  * `price`: Single unit product cost.
+  * `quantity`: Selected quantity (defaulting to 1 where applicable).
+  * `item_variant`: Selected style, finish, or color.
+  * `item_category`: The category (e.g. Jewelry, Books, Caps).
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
