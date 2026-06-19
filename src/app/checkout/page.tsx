@@ -76,6 +76,11 @@ export default function CheckoutPage() {
   })
   const [errors, setErrors] = useState<Partial<DeliveryForm>>({})
   const [loading, setLoading] = useState(false)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const sub = subtotal()
   const vat = Math.round(sub * VAT_RATE)
@@ -84,7 +89,7 @@ export default function CheckoutPage() {
   const hasTrackedCheckoutRef = useRef(false)
 
   useEffect(() => {
-    if (items.length > 0 && !hasTrackedCheckoutRef.current) {
+    if (mounted && items.length > 0 && !hasTrackedCheckoutRef.current) {
       hasTrackedCheckoutRef.current = true
       sendGAEvent({
         event: 'begin_checkout',
@@ -100,7 +105,13 @@ export default function CheckoutPage() {
         })),
       })
     }
-  }, [items, total])
+  }, [mounted, items, total])
+
+  useEffect(() => {
+    if (mounted && items.length === 0) {
+      router.push('/shop')
+    }
+  }, [mounted, items, router])
 
   function validate(): boolean {
     const e: Partial<DeliveryForm> = {}
@@ -210,8 +221,7 @@ export default function CheckoutPage() {
     }
   }
 
-  if (items.length === 0) {
-    router.push('/shop')
+  if (!mounted || items.length === 0) {
     return null
   }
 

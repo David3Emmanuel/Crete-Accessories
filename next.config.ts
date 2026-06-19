@@ -23,7 +23,6 @@ if (process.env.STRAPI_HOST && process.env.STRAPI_HOST.trim() !== "") {
   remotePatterns.push({
     protocol: "https" as const,
     hostname: process.env.STRAPI_HOST.trim(),
-    port: "",
     pathname: "/uploads/**",
   });
 }
