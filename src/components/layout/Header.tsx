@@ -44,8 +44,8 @@ export default function Header({ categories = [] }: HeaderProps) {
           <Image
             src='/logo.png'
             alt='Crete Accessories Logo'
-            width={48}
-            height={48}
+            width={64}
+            height={36}
             className='object-contain'
             priority
           />

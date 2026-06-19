@@ -38,8 +38,8 @@ export default async function Footer() {
             <Image
               src='/logo.png'
               alt='Crete Accessories Logo'
-              width={64}
-              height={64}
+              width={84}
+              height={48}
               className='object-contain'
             />
           </Link>
