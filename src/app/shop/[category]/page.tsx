@@ -5,6 +5,7 @@ import ProductCard from '@/components/shop/ProductCard'
 import ShopFilters from '@/components/shop/ShopFilters'
 import ShopSort from '@/components/shop/ShopSort'
 import Pagination from '@/components/shop/Pagination'
+import TrackEvent from '@/components/analytics/TrackEvent'
 
 type SP = Promise<{ [key: string]: string | string[] | undefined }>
 
@@ -51,6 +52,20 @@ async function CategoryContent({ params, searchParams }: Props) {
 
   return (
     <main className='min-h-screen pt-12 pb-24 px-4 md:px-8 max-w-400 mx-auto'>
+      <TrackEvent
+        event='view_item_list'
+        payload={{
+          item_list_id: `category_${category}`,
+          item_list_name: matchedCategory.name,
+          items: products.map((p, idx) => ({
+            item_id: String(p.id),
+            item_name: p.name,
+            index: idx + 1,
+            price: p.price,
+            item_category: p.category?.name ?? undefined,
+          })),
+        }}
+      />
       <div className='flex flex-col md:flex-row gap-12'>
         <ShopFilters categories={categories} activeCategory={category} />
 

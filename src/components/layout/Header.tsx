@@ -2,10 +2,11 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { Search, Heart, ShoppingBag, User } from 'lucide-react'
 import { useCartStore } from '@/lib/store/cart'
 import { useAuthStore } from '@/lib/store/auth'
+import { sendGAEvent } from '@next/third-parties/google'
 
 interface HeaderProps {
   categories?: { name: string; slug: string }[]
@@ -19,9 +20,21 @@ const fallbackCategories = [
 
 export default function Header({ categories = [] }: HeaderProps) {
   const pathname = usePathname()
+  const router = useRouter()
   const cartCount = useCartStore((s) => s.totalItems())
   const openDrawer = useCartStore((s) => s.openDrawer)
   const user = useAuthStore((s) => s.user)
+
+  const handleSearchClick = () => {
+    const query = prompt('Search for products:')
+    if (query && query.trim() !== '') {
+      sendGAEvent({
+        event: 'search',
+        search_term: query.trim(),
+      })
+      router.push(`/shop?search=${encodeURIComponent(query.trim())}`)
+    }
+  }
 
   const displayCategories = categories.length > 0 ? categories : fallbackCategories
 
@@ -75,6 +88,7 @@ export default function Header({ categories = [] }: HeaderProps) {
       <div className='flex items-center gap-4'>
         <button
           aria-label='Search'
+          onClick={handleSearchClick}
           className='text-neutral-400 hover:text-primary transition-colors'
         >
           <Search size={20} />

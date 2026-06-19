@@ -6,6 +6,7 @@ import { ShoppingCart } from 'lucide-react'
 import type { Product } from '@/lib/strapi/types'
 import { getStrapiMediaUrl } from '@/lib/strapi/media'
 import { useCartStore } from '@/lib/store/cart'
+import { sendGAEvent } from '@next/third-parties/google'
 
 interface ProductCardProps {
   product: Product
@@ -29,6 +30,39 @@ export default function ProductCard({
 }: ProductCardProps) {
   const addItem = useCartStore((s) => s.addItem)
   const openDrawer = useCartStore((s) => s.openDrawer)
+
+  const handleSelect = () => {
+    sendGAEvent({
+      event: 'select_item',
+      items: [
+        {
+          item_id: String(product.id),
+          item_name: product.name,
+          price: product.price,
+          item_category: product.category?.name ?? undefined,
+        },
+      ],
+    })
+  }
+
+  const handleAddToCart = () => {
+    addItem(product)
+    openDrawer()
+    sendGAEvent({
+      event: 'add_to_cart',
+      value: product.price,
+      currency: 'NGN',
+      items: [
+        {
+          item_id: String(product.id),
+          item_name: product.name,
+          price: product.price,
+          quantity: 1,
+          item_category: product.category?.name ?? undefined,
+        },
+      ],
+    })
+  }
   const image = product.images?.[0]
   const imageUrl = image ? getStrapiMediaUrl(image.url) : null
   const badge = product.badge
@@ -38,7 +72,7 @@ export default function ProductCard({
       <div
         className={`group bg-[#1a1a1a] p-6 rounded-lg transition-all duration-500 hover:shadow-[0_0_50px_rgba(230,195,100,0.1)] ${className}`}
       >
-        <Link href={`/products/${product.slug}`}>
+        <Link href={`/products/${product.slug}`} onClick={handleSelect}>
           <div className='relative aspect-[4/5] overflow-hidden rounded-lg mb-6 bg-surface-container'>
             {imageUrl ? (
               <Image
@@ -63,10 +97,7 @@ export default function ProductCard({
           </div>
         </Link>
         <button
-          onClick={() => {
-            addItem(product)
-            openDrawer()
-          }}
+          onClick={handleAddToCart}
           className='w-full mt-4 py-3 border border-primary text-primary rounded-full group-hover:bg-primary group-hover:text-on-primary transition-all duration-300 font-bold uppercase tracking-widest text-xs'
         >
           Add to Cart
@@ -80,7 +111,7 @@ export default function ProductCard({
     <div
       className={`group bg-[#1c1b1b] rounded-lg overflow-hidden transition-all duration-500 hover:shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex flex-col border border-transparent hover:border-primary/20 ${className}`}
     >
-      <Link href={`/products/${product.slug}`} className='relative aspect-[4/5] overflow-hidden'>
+      <Link href={`/products/${product.slug}`} onClick={handleSelect} className='relative aspect-[4/5] overflow-hidden'>
         {imageUrl ? (
           <Image
             src={imageUrl}
@@ -114,10 +145,7 @@ export default function ProductCard({
           </span>
           <button
             aria-label={`Add ${product.name} to cart`}
-            onClick={() => {
-              addItem(product)
-              openDrawer()
-            }}
+            onClick={handleAddToCart}
             className='flex items-center justify-center w-12 h-12 rounded-full bg-primary-container text-on-primary hover:bg-primary transition-colors shadow-lg shadow-primary/10'
           >
             <ShoppingCart size={18} />

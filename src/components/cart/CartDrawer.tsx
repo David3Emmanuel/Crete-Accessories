@@ -1,14 +1,62 @@
 'use client'
 
+import { useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { X, Minus, Plus, ShoppingBag } from 'lucide-react'
 import { useCartStore } from '@/lib/store/cart'
+import type { CartItem } from '@/lib/store/cart'
 import { getStrapiMediaUrl } from '@/lib/strapi/media'
+import { sendGAEvent } from '@next/third-parties/google'
+import type { Product } from '@/lib/strapi/types'
 
 export default function CartDrawer() {
   const { items, drawerOpen, closeDrawer, updateQty, removeItem, subtotal } =
     useCartStore()
+
+  useEffect(() => {
+    if (drawerOpen) {
+      sendGAEvent({
+        event: 'view_cart',
+        value: subtotal(),
+        currency: 'NGN',
+        items: items.map((i) => ({
+          item_id: String(i.product.id),
+          item_name: i.product.name,
+          price: i.product.price,
+          quantity: i.quantity,
+          item_variant: i.variant ?? undefined,
+          item_category: i.product.category?.name ?? undefined,
+        })),
+      })
+    }
+  }, [drawerOpen, items, subtotal])
+
+  const handleRemove = (product: Product, variant?: string) => {
+    removeItem(product.id, variant)
+    sendGAEvent({
+      event: 'remove_from_cart',
+      value: product.price,
+      currency: 'NGN',
+      items: [
+        {
+          item_id: String(product.id),
+          item_name: product.name,
+          price: product.price,
+          item_variant: variant ?? undefined,
+          item_category: product.category?.name ?? undefined,
+        },
+      ],
+    })
+  }
+
+  const handleDecreaseQty = (item: CartItem) => {
+    if (item.quantity <= 1) {
+      handleRemove(item.product, item.variant)
+    } else {
+      updateQty(item.product.id, item.quantity - 1, item.variant)
+    }
+  }
 
   return (
     <>
@@ -92,7 +140,7 @@ export default function CartDrawer() {
                         <button
                           aria-label='Decrease quantity'
                           onClick={() =>
-                            updateQty(product.id, quantity - 1, variant)
+                            handleDecreaseQty({ product, quantity, variant })
                           }
                           className='w-7 h-7 rounded-full border border-neutral-700 flex items-center justify-center text-neutral-400 hover:border-primary hover:text-primary transition-colors'
                         >
@@ -111,7 +159,7 @@ export default function CartDrawer() {
                           <Plus size={12} />
                         </button>
                         <button
-                          onClick={() => removeItem(product.id, variant)}
+                          onClick={() => handleRemove(product, variant)}
                           className='ml-auto text-xs text-neutral-500 hover:text-red-400 transition-colors'
                         >
                           Remove

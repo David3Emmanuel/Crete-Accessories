@@ -37,6 +37,23 @@ export default function ProductActions({ product }: ProductActionsProps) {
     })
   }
 
+  const handleAddToWishlist = () => {
+    sendGAEvent({
+      event: 'add_to_wishlist',
+      value: product.price,
+      currency: 'NGN',
+      items: [
+        {
+          item_id: String(product.id),
+          item_name: product.name,
+          price: product.price,
+          item_category: product.category?.name ?? undefined,
+        },
+      ],
+    })
+    alert('Product saved to wishlist!')
+  }
+
   return (
     <div className='flex flex-col gap-8'>
       {/* Variant colour swatches */}
@@ -100,7 +117,10 @@ export default function ProductActions({ product }: ProductActionsProps) {
         >
           Add to Cart
         </button>
-        <button className='flex items-center justify-center gap-2 px-8 py-5 rounded-full border border-neutral-600 hover:border-primary transition-colors text-on-surface'>
+        <button
+          onClick={handleAddToWishlist}
+          className='flex items-center justify-center gap-2 px-8 py-5 rounded-full border border-neutral-600 hover:border-primary transition-colors text-on-surface'
+        >
           <Heart size={18} />
           <span className='text-sm font-medium'>Save</span>
         </button>

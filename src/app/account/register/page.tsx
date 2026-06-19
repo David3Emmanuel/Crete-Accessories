@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Eye, EyeOff, Lock, Mail, User, ArrowRight } from 'lucide-react'
 import { useAuthStore } from '@/lib/store/auth'
+import { sendGAEvent } from '@next/third-parties/google'
 
 export default function RegisterPage() {
   const router = useRouter()
@@ -37,6 +38,10 @@ export default function RegisterPage() {
       }
 
       setAuth(data.user, data.jwt)
+      sendGAEvent({
+        event: 'sign_up',
+        method: 'email_password',
+      })
       router.push('/account/orders')
       router.refresh()
     } catch (err: any) {

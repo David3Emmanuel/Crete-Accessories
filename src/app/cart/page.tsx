@@ -1,10 +1,14 @@
 'use client'
 
+import { useEffect, useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Minus, Plus, Trash2, ShoppingBag } from 'lucide-react'
 import { useCartStore } from '@/lib/store/cart'
+import type { CartItem } from '@/lib/store/cart'
 import { getStrapiMediaUrl } from '@/lib/strapi/media'
+import { sendGAEvent } from '@next/third-parties/google'
+import type { Product } from '@/lib/strapi/types'
 
 const SHIPPING = 3500
 const VAT_RATE = 0.075
@@ -15,6 +19,53 @@ export default function CartPage() {
   const sub = subtotal()
   const vat = Math.round(sub * VAT_RATE)
   const total = sub + SHIPPING + vat
+
+  const hasTrackedRef = useRef(false)
+
+  useEffect(() => {
+    if (items.length > 0 && !hasTrackedRef.current) {
+      hasTrackedRef.current = true
+      sendGAEvent({
+        event: 'view_cart',
+        value: sub,
+        currency: 'NGN',
+        items: items.map((i) => ({
+          item_id: String(i.product.id),
+          item_name: i.product.name,
+          price: i.product.price,
+          quantity: i.quantity,
+          item_variant: i.variant ?? undefined,
+          item_category: i.product.category?.name ?? undefined,
+        })),
+      })
+    }
+  }, [items, sub])
+
+  const handleRemove = (product: Product, variant?: string) => {
+    removeItem(product.id, variant)
+    sendGAEvent({
+      event: 'remove_from_cart',
+      value: product.price,
+      currency: 'NGN',
+      items: [
+        {
+          item_id: String(product.id),
+          item_name: product.name,
+          price: product.price,
+          item_variant: variant ?? undefined,
+          item_category: product.category?.name ?? undefined,
+        },
+      ],
+    })
+  }
+
+  const handleDecreaseQty = (item: CartItem) => {
+    if (item.quantity <= 1) {
+      handleRemove(item.product, item.variant)
+    } else {
+      updateQty(item.product.id, item.quantity - 1, item.variant)
+    }
+  }
 
   if (items.length === 0) {
     return (
@@ -86,7 +137,7 @@ export default function CartPage() {
                     <button
                       aria-label='Decrease quantity'
                       onClick={() =>
-                        updateQty(product.id, quantity - 1, variant)
+                        handleDecreaseQty({ product, quantity, variant })
                       }
                       className='w-8 h-8 rounded-full border border-neutral-700 flex items-center justify-center text-neutral-400 hover:border-primary hover:text-primary transition-colors'
                     >
@@ -109,7 +160,7 @@ export default function CartPage() {
                     </span>
                     <button
                       aria-label={`Remove ${product.name}`}
-                      onClick={() => removeItem(product.id, variant)}
+                      onClick={() => handleRemove(product, variant)}
                       className='text-neutral-600 hover:text-red-400 transition-colors'
                     >
                       <Trash2 size={16} />

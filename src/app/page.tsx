@@ -18,6 +18,7 @@ import Marquee from '@/components/home/Marquee'
 import NewArrivals from '@/components/home/NewArrivals'
 import TrustBadges from '@/components/home/TrustBadges'
 import SocialGrid from '@/components/home/SocialGrid'
+import TrackEvent from '@/components/analytics/TrackEvent'
 
 export default async function HomePage() {
   const [categories, newArrivals] = await Promise.all([
@@ -27,6 +28,20 @@ export default async function HomePage() {
 
   return (
     <>
+      <TrackEvent
+        event='view_item_list'
+        payload={{
+          item_list_id: 'new_arrivals',
+          item_list_name: 'New Arrivals',
+          items: newArrivals.map((p, idx) => ({
+            item_id: String(p.id),
+            item_name: p.name,
+            index: idx + 1,
+            price: p.price,
+            item_category: p.category?.name ?? undefined,
+          })),
+        }}
+      />
       <Hero />
       <CategoryStrip categories={categories} />
       <Marquee />

@@ -6,6 +6,7 @@ import ImageGallery from '@/components/product/ImageGallery'
 import ProductActions from '@/components/product/ProductActions'
 import ProductTabs from '@/components/product/ProductTabs'
 import ProductCard from '@/components/shop/ProductCard'
+import TrackEvent from '@/components/analytics/TrackEvent'
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -60,6 +61,21 @@ export default async function ProductPage({ params }: Props) {
 
   return (
     <main className='min-h-screen pb-24'>
+      <TrackEvent
+        event='view_item'
+        payload={{
+          value: product.price,
+          currency: 'NGN',
+          items: [
+            {
+              item_id: String(product.id),
+              item_name: product.name,
+              price: product.price,
+              item_category: product.category?.name ?? undefined,
+            },
+          ],
+        }}
+      />
       {/* JSON-LD */}
       <script
         type='application/ld+json'

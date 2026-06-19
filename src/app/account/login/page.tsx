@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Eye, EyeOff, Lock, Mail, ArrowRight } from 'lucide-react'
 import { useAuthStore } from '@/lib/store/auth'
+import { sendGAEvent } from '@next/third-parties/google'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -36,6 +37,10 @@ export default function LoginPage() {
       }
 
       setAuth(data.user, data.jwt)
+      sendGAEvent({
+        event: 'login',
+        method: 'email_password',
+      })
       router.push('/account/orders')
       router.refresh()
     } catch (err: any) {
