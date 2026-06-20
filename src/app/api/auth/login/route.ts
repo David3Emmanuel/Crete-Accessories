@@ -26,27 +26,6 @@ export async function POST(req: Request) {
       )
     }
 
-    // Fetch user details with role
-    let role = 'authenticated'
-    try {
-      const meRes = await fetch(
-        `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/users/me?populate=role`,
-        {
-          headers: {
-            Authorization: `Bearer ${data.jwt}`,
-          },
-        },
-      )
-      if (meRes.ok) {
-        const meData = await meRes.json()
-        if (meData.role?.type) {
-          role = meData.role.type
-        }
-      }
-    } catch (err) {
-      console.error('Failed to fetch user role:', err)
-    }
-
     // Set httpOnly cookie for JWT
     const cookieStore = await cookies()
     cookieStore.set('jwt', data.jwt, {
@@ -60,7 +39,7 @@ export async function POST(req: Request) {
     return NextResponse.json({
       user: {
         ...data.user,
-        role,
+        role: data.user.role || 'authenticated',
       },
       jwt: data.jwt,
     })
