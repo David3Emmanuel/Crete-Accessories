@@ -1,9 +1,11 @@
 import { redirect } from 'next/navigation'
 import { cookies } from 'next/headers'
+import { connection } from 'next/server'
 import Link from 'next/link'
 import AdminSidebar from './AdminSidebar'
 
 async function checkAdminAuth() {
+  await connection()
   const cookieStore = await cookies()
   const jwt = cookieStore.get('jwt')?.value
 
