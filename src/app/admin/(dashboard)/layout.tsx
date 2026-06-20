@@ -12,6 +12,7 @@ async function checkAdminAuth() {
   }
 
   try {
+    console.log('[checkAdminAuth] Fetching /api/users/me. JWT exists:', !!jwt);
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/users/me`,
       {
@@ -22,18 +23,24 @@ async function checkAdminAuth() {
       }
     )
 
+    console.log('[checkAdminAuth] Response status:', res.status);
+
     if (!res.ok) {
+      const errorText = await res.text();
+      console.log('[checkAdminAuth] Response not OK. Body:', errorText);
       return { shouldRedirect: true }
     }
 
     const user = await res.json()
+    console.log('[checkAdminAuth] Fetched user data:', user);
     if (user.role !== 'admin') {
+      console.log('[checkAdminAuth] Redirecting because role is not admin. Role was:', user.role);
       return { shouldRedirect: true }
     }
 
     return { user, jwt, shouldRedirect: false }
   } catch (error) {
-    console.error('Error verifying admin auth:', error)
+    console.error('[checkAdminAuth] Exception caught:', error)
     return { shouldRedirect: true }
   }
 }
