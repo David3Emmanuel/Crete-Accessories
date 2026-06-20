@@ -1,4 +1,5 @@
 import { cookies } from 'next/headers'
+import { connection } from 'next/server'
 import CategoriesClient from './CategoriesClient'
 
 async function getCategories(jwt: string) {
@@ -20,6 +21,7 @@ async function getCategories(jwt: string) {
 }
 
 export default async function AdminCategoriesPage() {
+  await connection()
   const cookieStore = await cookies()
   const jwt = cookieStore.get('jwt')?.value || ''
   

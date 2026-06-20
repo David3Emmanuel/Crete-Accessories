@@ -1,4 +1,5 @@
 import { cookies } from 'next/headers'
+import { connection } from 'next/server'
 import Link from 'next/link'
 import { 
   TrendingUp, 
@@ -47,6 +48,7 @@ async function getDashboardData(jwt: string) {
 }
 
 export default async function AdminDashboardPage() {
+  await connection()
   const cookieStore = await cookies()
   const jwt = cookieStore.get('jwt')?.value || ''
   

@@ -1,4 +1,5 @@
 import { cookies } from 'next/headers'
+import { connection } from 'next/server'
 import ProductForm from '../ProductForm'
 
 interface PageProps {
@@ -42,6 +43,7 @@ async function getProduct(id: string, jwt: string) {
 }
 
 export default async function AdminEditProductPage({ params }: PageProps) {
+  await connection()
   const { id } = await params
   const cookieStore = await cookies()
   const jwt = cookieStore.get('jwt')?.value || ''

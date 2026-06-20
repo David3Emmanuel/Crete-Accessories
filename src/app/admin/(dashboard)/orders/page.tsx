@@ -1,4 +1,5 @@
 import { cookies } from 'next/headers'
+import { connection } from 'next/server'
 import OrdersClient from './OrdersClient'
 
 async function getOrders(jwt: string) {
@@ -24,6 +25,7 @@ async function getOrders(jwt: string) {
 }
 
 export default async function AdminOrdersPage() {
+  await connection()
   const cookieStore = await cookies()
   const jwt = cookieStore.get('jwt')?.value || ''
   

@@ -1,4 +1,5 @@
 import { cookies } from 'next/headers'
+import { connection } from 'next/server'
 import ProductsClient from './ProductsClient'
 
 async function getProductsData(jwt: string) {
@@ -40,6 +41,7 @@ async function getProductsData(jwt: string) {
 }
 
 export default async function AdminProductsPage() {
+  await connection()
   const cookieStore = await cookies()
   const jwt = cookieStore.get('jwt')?.value || ''
   
