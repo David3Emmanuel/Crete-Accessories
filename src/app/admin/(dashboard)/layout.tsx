@@ -8,12 +8,12 @@ async function checkAdminAuth() {
   const jwt = cookieStore.get('jwt')?.value
 
   if (!jwt) {
-    redirect('/admin/login')
+    return { shouldRedirect: true }
   }
 
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/users/me?populate=role`,
+      `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/users/me`,
       {
         headers: {
           Authorization: `Bearer ${jwt}`,
@@ -23,18 +23,18 @@ async function checkAdminAuth() {
     )
 
     if (!res.ok) {
-      redirect('/admin/login')
+      return { shouldRedirect: true }
     }
 
     const user = await res.json()
-    if (user.role?.type !== 'admin') {
-      redirect('/admin/login')
+    if (user.role !== 'admin') {
+      return { shouldRedirect: true }
     }
 
-    return { user, jwt }
+    return { user, jwt, shouldRedirect: false }
   } catch (error) {
     console.error('Error verifying admin auth:', error)
-    redirect('/admin/login')
+    return { shouldRedirect: true }
   }
 }
 
@@ -43,7 +43,13 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode
 }) {
-  const { user } = await checkAdminAuth()
+  const auth = await checkAdminAuth()
+
+  if (auth.shouldRedirect) {
+    redirect('/admin/login')
+  }
+
+  const user = auth.user!
 
   return (
     <div className="flex min-h-screen bg-surface-dim font-sans text-on-surface">
