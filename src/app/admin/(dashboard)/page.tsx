@@ -12,7 +12,7 @@ import {
   CheckCircle,
   Truck,
   XCircle,
-  DollarSign
+  Coins
 } from 'lucide-react'
 
 async function getDashboardData(jwt: string) {
@@ -120,8 +120,8 @@ export default async function AdminDashboardPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Total Revenue */}
         <div className="bg-surface-base border border-surface-container/60 p-6 rounded-2xl relative overflow-hidden group hover:border-primary/30 transition-all duration-300">
-          <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
-            <DollarSign className="w-24 h-24 text-primary" />
+          <div className="absolute -right-4 -bottom-4 opacity-5 group-hover:opacity-10 transition-all duration-300 pointer-events-none">
+            <Coins className="w-24 h-24 text-primary" />
           </div>
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium text-on-surface/50">Total Revenue</span>
@@ -137,7 +137,7 @@ export default async function AdminDashboardPage() {
 
         {/* Total Orders */}
         <div className="bg-surface-base border border-surface-container/60 p-6 rounded-2xl relative overflow-hidden group hover:border-primary/30 transition-all duration-300">
-          <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+          <div className="absolute -right-4 -bottom-4 opacity-5 group-hover:opacity-10 transition-all duration-300 pointer-events-none">
             <ShoppingBag className="w-24 h-24 text-primary" />
           </div>
           <div className="flex items-center justify-between">
@@ -154,7 +154,7 @@ export default async function AdminDashboardPage() {
 
         {/* Total Products */}
         <div className="bg-surface-base border border-surface-container/60 p-6 rounded-2xl relative overflow-hidden group hover:border-primary/30 transition-all duration-300">
-          <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+          <div className="absolute -right-4 -bottom-4 opacity-5 group-hover:opacity-10 transition-all duration-300 pointer-events-none">
             <Package className="w-24 h-24 text-primary" />
           </div>
           <div className="flex items-center justify-between">
@@ -171,7 +171,7 @@ export default async function AdminDashboardPage() {
 
         {/* Low Stock Alerts */}
         <div className="bg-surface-base border border-surface-container/60 p-6 rounded-2xl relative overflow-hidden group hover:border-primary/30 transition-all duration-300">
-          <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+          <div className="absolute -right-4 -bottom-4 opacity-5 group-hover:opacity-10 transition-all duration-300 pointer-events-none">
             <AlertTriangle className="w-24 h-24 text-red-500" />
           </div>
           <div className="flex items-center justify-between">
