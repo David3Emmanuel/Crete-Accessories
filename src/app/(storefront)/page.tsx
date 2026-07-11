@@ -20,7 +20,9 @@ import TrustBadges from '@/components/home/TrustBadges'
 import SocialGrid from '@/components/home/SocialGrid'
 import TrackEvent from '@/components/analytics/TrackEvent'
 
-export default async function HomePage() {
+import { Suspense } from 'react'
+
+async function HomeContent() {
   const [categories, newArrivals] = await Promise.all([
     getCategories(),
     getNewArrivals(3),
@@ -49,5 +51,20 @@ export default async function HomePage() {
       <TrustBadges />
       <SocialGrid />
     </>
+  )
+}
+
+export default function HomePage() {
+  return (
+    <Suspense fallback={
+      <>
+        <Hero />
+        <Marquee />
+        <TrustBadges />
+        <SocialGrid />
+      </>
+    }>
+      <HomeContent />
+    </Suspense>
   )
 }

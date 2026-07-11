@@ -1,13 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { Globe, Camera, Mail, ArrowRight } from 'lucide-react'
-import { getCategories } from '@/lib/strapi/fetch'
-
-const fallbackCategories = [
-  { name: 'Jewelry', slug: 'jewelry' },
-  { name: 'Books', slug: 'books' },
-  { name: 'Caps', slug: 'caps' },
-]
 
 const supportLinks = [
   { label: 'About Us', href: '/about' },
@@ -16,14 +9,15 @@ const supportLinks = [
   { label: 'Terms & Conditions', href: '/terms' },
 ]
 
-export default async function Footer() {
-  const categories = await getCategories()
-  const displayCategories = categories.length > 0 ? categories : fallbackCategories
+interface FooterProps {
+  categories?: { name: string; slug: string }[]
+}
 
+export default function Footer({ categories = [] }: FooterProps) {
   const quickLinks = [
     { label: 'Home', href: '/' },
     { label: 'Shop', href: '/shop' },
-    ...displayCategories.map((cat) => ({
+    ...categories.map((cat) => ({
       label: cat.name,
       href: `/shop/${cat.slug}`,
     })),

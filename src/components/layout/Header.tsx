@@ -12,12 +12,6 @@ interface HeaderProps {
   categories?: { name: string; slug: string }[]
 }
 
-const fallbackCategories = [
-  { name: 'Jewelry', slug: 'jewelry' },
-  { name: 'Books', slug: 'books' },
-  { name: 'Caps', slug: 'caps' },
-]
-
 export default function Header({ categories = [] }: HeaderProps) {
   const pathname = usePathname()
   const router = useRouter()
@@ -36,12 +30,10 @@ export default function Header({ categories = [] }: HeaderProps) {
     }
   }
 
-  const displayCategories = categories.length > 0 ? categories : fallbackCategories
-
   const navLinks = [
     { label: 'Home', href: '/' },
     { label: 'Shop', href: '/shop' },
-    ...displayCategories.map((cat) => ({
+    ...categories.map((cat) => ({
       label: cat.name,
       href: `/shop/${cat.slug}`,
     })),

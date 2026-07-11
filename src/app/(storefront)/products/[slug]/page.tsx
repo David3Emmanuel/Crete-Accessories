@@ -8,6 +8,8 @@ import ProductTabs from '@/components/product/ProductTabs'
 import ProductCard from '@/components/shop/ProductCard'
 import TrackEvent from '@/components/analytics/TrackEvent'
 
+import { Suspense } from 'react'
+
 interface Props {
   params: Promise<{ slug: string }>
 }
@@ -34,7 +36,7 @@ export async function generateMetadata({ params }: Props) {
   }
 }
 
-export default async function ProductPage({ params }: Props) {
+async function ProductContent({ params }: Props) {
   const { slug } = await params
   const product = await getProduct(slug)
   if (!product) notFound()
@@ -154,5 +156,13 @@ export default async function ProductPage({ params }: Props) {
         </section>
       )}
     </main>
+  )
+}
+
+export default function ProductPage(props: Props) {
+  return (
+    <Suspense fallback={<div className='min-h-screen py-24 text-center text-neutral-500'>Loading Product...</div>}>
+      <ProductContent {...props} />
+    </Suspense>
   )
 }
