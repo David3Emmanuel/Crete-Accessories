@@ -19,10 +19,10 @@ export const metadata: Metadata = {
     description: 'Luxury handcrafted jewelry, books, and caps with African editorial energy.',
     images: [
       {
-        url: '/logo.png',
+        url: '/og-banner.jpg',
         width: 1200,
         height: 630,
-        alt: 'Crete Accessories Logo',
+        alt: 'Crete Accessories Brand Showcase',
       },
     ],
   },
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Crete Accessories',
     description: 'Luxury handcrafted jewelry, books, and caps with African editorial energy.',
-    images: ['/logo.png'],
+    images: ['/og-banner.jpg'],
   },
 }
 

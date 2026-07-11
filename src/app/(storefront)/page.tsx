@@ -15,10 +15,10 @@ export const metadata: Metadata = {
     type: 'website',
     images: [
       {
-        url: '/logo.png',
+        url: '/og-banner.jpg',
         width: 1200,
         height: 630,
-        alt: 'Crete Accessories Logo',
+        alt: 'Crete Accessories Brand Showcase',
       },
     ],
   },
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     title: 'Crete Accessories | Luxury Jewelry, Books & Caps',
     description:
       'Shop handcrafted luxury jewelry, editorial books, and statement caps. African aesthetics, global edge.',
-    images: ['/logo.png'],
+    images: ['/og-banner.jpg'],
   },
 }
 import Hero from '@/components/home/Hero'
