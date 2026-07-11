@@ -2,7 +2,9 @@ import { redirect } from 'next/navigation'
 import { cookies } from 'next/headers'
 import { connection } from 'next/server'
 import Link from 'next/link'
+import { Suspense } from 'react'
 import AdminSidebar from './AdminSidebar'
+import AdminTour from './AdminTour'
 
 async function checkAdminAuth() {
   await connection()
@@ -47,7 +49,7 @@ async function checkAdminAuth() {
   }
 }
 
-export default async function DashboardLayout({
+async function AuthWrapper({
   children,
 }: {
   children: React.ReactNode
@@ -88,6 +90,26 @@ export default async function DashboardLayout({
           {children}
         </main>
       </div>
+      <AdminTour />
     </div>
+  )
+}
+
+export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center min-h-screen bg-surface-dim text-on-surface font-sans">
+        <div className="text-center space-y-3">
+          <div className="w-10 h-10 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto" />
+          <p className="text-xs text-on-surface/50 font-sans">Verifying session...</p>
+        </div>
+      </div>
+    }>
+      <AuthWrapper>{children}</AuthWrapper>
+    </Suspense>
   )
 }

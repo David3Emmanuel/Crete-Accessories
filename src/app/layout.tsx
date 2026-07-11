@@ -1,18 +1,9 @@
 import type { Metadata } from 'next'
-import { Inter, Noto_Serif } from 'next/font/google'
+// import { Inter, Noto_Serif } from 'next/font/google'
 import './globals.css'
 
-const inter = Inter({
-  variable: '--font-sans',
-  subsets: ['latin'],
-  display: 'swap',
-})
-
-const notoSerif = Noto_Serif({
-  variable: '--font-serif',
-  subsets: ['latin'],
-  display: 'swap',
-})
+const inter = { variable: 'font-sans' }
+const notoSerif = { variable: 'font-serif' }
 
 export const metadata: Metadata = {
   title: {

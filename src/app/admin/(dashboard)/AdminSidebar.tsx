@@ -12,7 +12,8 @@ import {
   LogOut, 
   Menu, 
   X,
-  Crown
+  Crown,
+  Sparkles
 } from 'lucide-react'
 
 interface AdminSidebarProps {
@@ -95,6 +96,7 @@ export default function AdminSidebar({ user }: AdminSidebarProps) {
                   key={item.href}
                   href={item.href}
                   onClick={() => setIsOpen(false)}
+                  data-tour={`sidebar-${item.name.toLowerCase()}`}
                   className={`flex items-center gap-3.5 px-4 py-3 rounded-xl transition-all text-sm font-medium ${
                     isActive
                       ? 'bg-primary text-on-primary shadow-lg shadow-primary/10'
@@ -111,6 +113,14 @@ export default function AdminSidebar({ user }: AdminSidebarProps) {
 
         {/* User Footer Profile & Logout */}
         <div className="p-4 border-t border-surface-container/60 flex flex-col gap-4">
+          <button
+            onClick={() => window.dispatchEvent(new Event('start-admin-tour'))}
+            className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs font-semibold text-primary bg-primary/5 hover:bg-primary/10 border border-primary/20 hover:border-primary/40 transition-all font-sans cursor-pointer justify-center"
+          >
+            <Sparkles className="w-4 h-4" />
+            <span>Take a Guided Tour</span>
+          </button>
+
           <div className="flex items-center gap-3 px-2">
             <div className="w-9 h-9 rounded-full bg-surface-container flex items-center justify-center font-bold text-primary border border-surface-high">
               {user.username.charAt(0).toUpperCase()}

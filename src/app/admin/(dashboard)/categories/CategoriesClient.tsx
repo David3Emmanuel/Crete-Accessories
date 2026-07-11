@@ -270,6 +270,7 @@ export default function CategoriesClient({ initialCategories, jwt }: CategoriesC
         </div>
         <button
           onClick={handleStartCreate}
+          data-tour="add-category-btn"
           className="flex items-center gap-2 bg-primary hover:bg-primary-container text-on-primary text-sm font-medium px-4 py-2.5 rounded-xl transition-all"
         >
           <FolderPlus className="w-4 h-4" />

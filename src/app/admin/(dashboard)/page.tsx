@@ -119,7 +119,7 @@ export default async function AdminDashboardPage() {
       )}
 
       {/* Stats Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div data-tour="overview-stats" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Total Revenue */}
         <div className="bg-surface-base border border-surface-container/60 p-6 rounded-2xl relative overflow-hidden group hover:border-primary/30 transition-all duration-300">
           <div className="absolute -right-4 -bottom-4 opacity-5 group-hover:opacity-10 transition-all duration-300 pointer-events-none">

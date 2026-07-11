@@ -128,6 +128,7 @@ export default function ProductsClient({ initialProducts, categories, jwt }: Pro
         </div>
         <Link
           href="/admin/products/new"
+          data-tour="add-product-btn"
           className="flex items-center gap-2 bg-primary hover:bg-primary-container text-on-primary text-sm font-medium px-4 py-2.5 rounded-xl transition-all self-start sm:self-auto"
         >
           <Plus className="w-4 h-4" />

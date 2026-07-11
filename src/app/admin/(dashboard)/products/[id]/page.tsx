@@ -42,6 +42,10 @@ async function getProduct(id: string, jwt: string) {
   return data?.data || null
 }
 
+export async function generateStaticParams() {
+  return [{ id: '1' }]
+}
+
 export default async function AdminEditProductPage({ params }: PageProps) {
   await connection()
   const { id } = await params

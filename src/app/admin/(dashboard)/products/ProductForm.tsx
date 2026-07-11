@@ -348,6 +348,7 @@ export default function ProductForm({ initialData, categories, jwt }: ProductFor
                 <input
                   type="text"
                   required
+                  data-tour="product-form-name"
                   placeholder="e.g. Sovereign Gold Bracelet"
                   value={name}
                   onChange={(e) => handleNameChange(e.target.value)}
@@ -371,6 +372,7 @@ export default function ProductForm({ initialData, categories, jwt }: ProductFor
                 <label className="block text-xs font-semibold text-on-surface/60 uppercase tracking-wider mb-2">Product Category</label>
                 <select
                   required
+                  data-tour="product-form-category"
                   value={categoryId}
                   onChange={(e) => setCategoryId(e.target.value)}
                   className="w-full px-4 py-2.5 bg-surface-dim/80 border border-surface-container rounded-xl text-sm text-on-surface focus:outline-none focus:border-primary/50 transition-colors"
@@ -409,6 +411,7 @@ export default function ProductForm({ initialData, categories, jwt }: ProductFor
                 <input
                   type="number"
                   required
+                  data-tour="product-form-price"
                   min={0}
                   placeholder="50000"
                   value={price || ''}
@@ -422,6 +425,7 @@ export default function ProductForm({ initialData, categories, jwt }: ProductFor
                 <input
                   type="number"
                   required
+                  data-tour="product-form-stock"
                   min={0}
                   placeholder="10"
                   value={stockCount}
@@ -726,6 +730,7 @@ export default function ProductForm({ initialData, categories, jwt }: ProductFor
             <button
               type="submit"
               disabled={loading}
+              data-tour="product-form-save"
               className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary-container text-on-primary font-semibold py-3 px-4 rounded-xl transition-all disabled:opacity-50 disabled:pointer-events-none"
             >
               {loading ? (
