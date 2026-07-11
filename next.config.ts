@@ -9,6 +9,11 @@ const remotePatterns = [
   },
   {
     protocol: "https" as const,
+    hostname: "res.cloudinary.com",
+    pathname: "/**",
+  },
+  {
+    protocol: "https" as const,
     hostname: "*.googleusercontent.com",
     pathname: "/**",
   },
