@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ChevronRight } from 'lucide-react'
-import { getProduct, getProductSlugs, getRelatedProducts } from '@/lib/strapi/fetch'
+import { getProduct, getProductSlugs, getRelatedProducts, getStrapiMediaUrl } from '@/lib/strapi/fetch'
 import ImageGallery from '@/components/product/ImageGallery'
 import ProductActions from '@/components/product/ProductActions'
 import ProductTabs from '@/components/product/ProductTabs'
@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: Props) {
       title: product.seoTitle ?? product.name,
       description: product.seoDescription ?? undefined,
       images: product.images?.[0]
-        ? [{ url: product.images[0].url }]
+        ? [{ url: getStrapiMediaUrl(product.images[0].url) }]
         : [],
     },
   }
@@ -50,7 +50,7 @@ async function ProductContent({ params }: Props) {
     '@type': 'Product',
     name: product.name,
     description: product.seoDescription ?? undefined,
-    image: product.images?.map((img: { url: string }) => img.url) ?? [],
+    image: product.images?.map((img: { url: string }) => getStrapiMediaUrl(img.url)) ?? [],
     offers: {
       '@type': 'Offer',
       priceCurrency: 'NGN',
