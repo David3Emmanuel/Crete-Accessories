@@ -14,6 +14,7 @@ export const metadata: Metadata = {
   description:
     'Luxury handcrafted jewelry, books, and caps with African editorial energy.',
   openGraph: {
+    siteName: 'Crete Accessories',
     title: 'Crete Accessories',
     description: 'Luxury handcrafted jewelry, books, and caps with African editorial energy.',
     images: [
@@ -24,6 +25,12 @@ export const metadata: Metadata = {
         alt: 'Crete Accessories Logo',
       },
     ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Crete Accessories',
+    description: 'Luxury handcrafted jewelry, books, and caps with African editorial energy.',
+    images: ['/logo.png'],
   },
 }
 

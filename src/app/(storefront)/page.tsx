@@ -2,14 +2,32 @@ import type { Metadata } from 'next'
 import { getCategories, getNewArrivals } from '@/lib/strapi/fetch'
 
 export const metadata: Metadata = {
-  title: 'Crete Accessories | Luxury Handcrafted Jewelry, Books & Caps',
+  title: {
+    absolute: 'Crete Accessories | Luxury Jewelry, Books & Caps',
+  },
   description:
     'Shop handcrafted luxury jewelry, editorial books, and statement caps. African aesthetics, global edge.',
   openGraph: {
-    title: 'Crete Accessories',
+    siteName: 'Crete Accessories',
+    title: 'Crete Accessories | Luxury Jewelry, Books & Caps',
     description:
-      'Luxury handcrafted jewelry, books, and caps with African editorial energy.',
+      'Shop handcrafted luxury jewelry, editorial books, and statement caps. African aesthetics, global edge.',
     type: 'website',
+    images: [
+      {
+        url: '/logo.png',
+        width: 1200,
+        height: 630,
+        alt: 'Crete Accessories Logo',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Crete Accessories | Luxury Jewelry, Books & Caps',
+    description:
+      'Shop handcrafted luxury jewelry, editorial books, and statement caps. African aesthetics, global edge.',
+    images: ['/logo.png'],
   },
 }
 import Hero from '@/components/home/Hero'
